@@ -192,6 +192,16 @@ public class TCPConnection implements Runnable {
                             final String filter_sortby_dir = in.readLine().replaceAll("\\p{C}", "");
                             String filter_limit = in.readLine().replaceAll("\\p{C}", "");
                             
+                            //Skip servers with <INV> gamename (this might happen if a server was created using UDP connection but never initialized via TCP)
+                            //TODO: Remove these invalid servers after some time.
+                            Iterator<Map.Entry<String, Server>> iterInv = servers.entrySet().iterator();
+                            while (iterInv.hasNext()) {
+                                Map.Entry<String, Server> entry = iterInv.next();
+                                if (entry.getValue().getData1().equals("<INV>")) {
+                                    iterInv.remove();
+                                }
+                            }
+                            
                             if (!"".equals(filter_data1)) {
                                 Iterator<Map.Entry<String, Server>> iter = servers.entrySet().iterator();
                                 while (iter.hasNext()) {

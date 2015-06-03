@@ -94,6 +94,8 @@ public class UDPPacket {
                     Mediator.log(debug_string+" Server registered!",false);
                     Server serverObj = this.main.getServer(packet.getAddress().getHostAddress());
                     serverObj.setPort(packet.getPort());
+                    //Make server invalid for now (see Lobby for more details (in TCPConnection))
+                    serverObj.setData1("<INV>");
                     
                 break;
                 case "connect":
