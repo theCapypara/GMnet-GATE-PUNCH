@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.parakoopa</groupId>
     <artifactId>GMnetGATE.PUNCH</artifactId>
-    <version>1.2.4-SNAPSHOT</version>
+    <version>1.2.5</version>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>

@@ -63,7 +63,7 @@ public class Mediator {
     /**
      * --version (read only) Version of this master server
      */
-    private static final String version = "1.2.4-SNAPSHOT";
+    private static final String version = "1.2.5";
 
     /**
      * Minimum required GMnet PUNCH version.

@@ -24,15 +24,12 @@ package org.parakoopa.gmnetgate.punch;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Handles incoming TCP connections.
@@ -142,9 +139,11 @@ public class TCPConnection implements Runnable {
                                 //Send server port to client
                                 Mediator.log(debug_string2+" Found server",true);
                                 Mediator.log(debug_string2+" Send server port "+connect_to_port+" to client",true);
-                                out.write((byte) 255);
-                                out.write((connect_to_server+this.gm_string_seperator).getBytes());
-                                out.write((String.valueOf(connect_to_port)+this.gm_string_seperator).getBytes());
+                                ByteArrayOutputStream bb = new ByteArrayOutputStream();
+                                bb.write((byte) 255);
+                                bb.write((connect_to_server+this.gm_string_seperator).getBytes());
+                                bb.write((String.valueOf(connect_to_port)+this.gm_string_seperator).getBytes());
+                                out.write(bb.toByteArray());
                                 //Send buffer to client
                                 out.flush();
                                 //Get client port
@@ -153,9 +152,11 @@ public class TCPConnection implements Runnable {
                                 Mediator.log(debug_string2+" Send client port "+connect_to_port_server+" to server",true);
                                 //Get an output stream for the server socket. We will contact the server with this.
                                 OutputStream out_server = gameserver.getOutputStream();
-                                out_server.write((byte) 255);
-                                out_server.write((this.client.getInetAddress().getHostAddress()+this.gm_string_seperator).getBytes());
-                                out_server.write(String.valueOf(connect_to_port_server+this.gm_string_seperator).getBytes());
+                                ByteArrayOutputStream bb_server = new ByteArrayOutputStream();
+                                bb_server.write((byte) 255);
+                                bb_server.write((this.client.getInetAddress().getHostAddress()+this.gm_string_seperator).getBytes());
+                                bb_server.write(String.valueOf(connect_to_port_server+this.gm_string_seperator).getBytes());
+                                out_server.write(bb_server.toByteArray());
                                 //Send buffer to server
                                 out_server.flush();
                                 //We are done! Client and Server now connect to each other and the hole is punched!
@@ -331,11 +332,12 @@ public class TCPConnection implements Runnable {
                             
                             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
                             String json = gson.toJson(arr);
-                            
-                            out.write((byte) 249);
-                            out.write(json.getBytes());
-                            out.write(10);
+                            ByteArrayOutputStream bb = new ByteArrayOutputStream();
+                            bb.write((byte) 249);
+                            bb.write(json.getBytes());
+                            bb.write(10);
                             //Send buffer to server
+                            out.write(bb.toByteArray());
                             out.flush();
                         }
                     break;
@@ -354,12 +356,14 @@ public class TCPConnection implements Runnable {
                         out.write((byte) 247);
                         if (Mediator.isTesting()) {
                             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-                            out.write(Mediator.getName().getBytes());
-                            out.write(10);
-                            out.write(Mediator.getVersion().getBytes());
-                            out.write(10);
-                            out.write(Mediator.getUdphpMin().getBytes());
-                            out.write(10);
+                            ByteArrayOutputStream bb = new ByteArrayOutputStream();
+                            bb.write(Mediator.getName().getBytes());
+                            bb.write(10);
+                            bb.write(Mediator.getVersion().getBytes());
+                            bb.write(10);
+                            bb.write(Mediator.getUdphpMin().getBytes());
+                            bb.write(10);
+                            out.write(bb.toByteArray());
                             Mediator.log(debug_string+" Sending testing information",true);
                         } else {
                             out.write((byte) 0);
@@ -368,9 +372,11 @@ public class TCPConnection implements Runnable {
                         out.flush();
                     break;
                     case "version":
-                        out.write((byte) 246);
-                        out.write(Mediator.getVersion().getBytes());
-                        out.write(10);
+                        ByteArrayOutputStream bb = new ByteArrayOutputStream();
+                        bb.write((byte) 246);
+                        bb.write(Mediator.getVersion().getBytes());
+                        bb.write(10);
+                        out.write(bb.toByteArray());
                         Mediator.log(debug_string+" Sending version information",true);
                         //Send buffer
                         out.flush();
